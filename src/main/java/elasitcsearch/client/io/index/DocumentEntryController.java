@@ -1,11 +1,11 @@
 package elasitcsearch.client.io.index;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import elasitcsearch.client.io.client.EsClient;
 import elasitcsearch.client.io.domain.EsDocument;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.client.RequestOptions;
+import org.elasticsearch.common.xcontent.XContentType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,8 +24,9 @@ public class DocumentEntryController {
         String documentJson = null;
         try {
             documentJson = new ObjectMapper().writeValueAsString(document);
-            IndexRequest indexRequest = new IndexRequest(indexName);
-            indexRequest.source(documentJson);
+            System.out.println(documentJson);
+            IndexRequest indexRequest = new IndexRequest(indexName).type(type);
+            indexRequest.source(documentJson, XContentType.JSON);
             esClient.getClient().index(indexRequest, RequestOptions.DEFAULT);
             log.info("DOCUMENT indexed ....");
         }catch (IOException e) {

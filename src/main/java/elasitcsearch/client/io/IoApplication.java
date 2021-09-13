@@ -4,6 +4,7 @@ import elasitcsearch.client.io.client.EsClient;
 import elasitcsearch.client.io.domain.EsDocument;
 import elasitcsearch.client.io.index.DocumentEntryController;
 import elasitcsearch.client.io.index.IndexController;
+import elasitcsearch.client.io.index.QueryController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,11 +30,12 @@ public class IoApplication {
 		SpringApplication.run(IoApplication.class, args);
 		System.out.println(host+ " "+port);
 		EsClient esClient = new EsClient(host, port);
-//		indexDocument(esClient);
 		indexDocument(esClient);
 
 		IndexController indexController = new IndexController(esClient);
-
+		QueryController queryController = new QueryController(esClient);
+		queryController.queryTerm(indexName,typname,"jemmy");
+		queryController.queryFuzzy(indexName,typname, "Jemmy");
 
 
 
@@ -42,7 +44,10 @@ public class IoApplication {
 	public static void indexDocument(EsClient esClient) {
 		try {
 			DocumentEntryController entryController = new DocumentEntryController(esClient);
-			entryController.createDocument(new EsDocument("A", "A1", 20, "lorem ipsum"), indexName, typname);
+			entryController.createDocument(new EsDocument("Alice", "Brown", 20, "lorem ipsum"), indexName, typname);
+			entryController.createDocument(new EsDocument("Bob", "Grown", 20, "ipsum lorea"), indexName, typname);
+			entryController.createDocument(new EsDocument("Steve", "Voznyak", 20, "lorem ipsum"), indexName, typname);
+			entryController.createDocument(new EsDocument("Jemmy", "Thomson", 20, "lorem ipsum"), indexName, typname);
 		}catch (final Exception e) {
 			log.error("EXCEPTION: ", e);
 		}
